@@ -29,3 +29,5 @@ class UserListAPIView(generics.ListAPIView):
     queryset = User.objects.all()
 
 
+class UserDestroyAPIView(generics.DestroyAPIView):
+    queryset = User.objects.all()
