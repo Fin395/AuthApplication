@@ -11,9 +11,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
-
     def validate(self, data):
-        if data['password'] != data['password_again']:
-            raise serializers.ValidationError('Пароли не совпадают')
-        data.pop('password_again')
+        if 'password' in data and 'password_again' in data:
+            if data['password'] != data['password_again']:
+                raise serializers.ValidationError('Пароли не совпадают')
+            else:
+                pass
+            data.pop('password_again')
         return data
