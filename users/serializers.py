@@ -19,3 +19,9 @@ class UserSerializer(serializers.ModelSerializer):
                 pass
             data.pop('password_again')
         return data
+
+
+class UserReducedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "is_staff"]

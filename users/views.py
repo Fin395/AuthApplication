@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, UserReducedSerializer
 
 
 class UserCreateAPIView(generics.CreateAPIView):
@@ -21,13 +21,23 @@ class UserUpdateAPIView(generics.UpdateAPIView):
 
 
 class UserRetrieveAPIView(generics.RetrieveAPIView):
-    serializer_class = UserSerializer
     queryset = User.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff or self.request.user == self.get_object():
+            return UserSerializer
+        else:
+            return UserReducedSerializer
 
 
 class UserListAPIView(generics.ListAPIView):
-    serializer_class = UserSerializer
     queryset = User.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return UserSerializer
+        else:
+            return UserReducedSerializer
 
 
 class UserDestroyAPIView(generics.DestroyAPIView):
