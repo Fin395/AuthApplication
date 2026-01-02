@@ -1,6 +1,8 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from users.models import User
 from users.permissions import IsAdminOrProfileOwner
@@ -53,3 +55,24 @@ class UserDestroyAPIView(generics.DestroyAPIView):
         instance.is_active = False
         instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # Получить токен из заголовка
+            auth_header = request.headers.get('Authorization', None)
+            if not auth_header:
+                return Response({"detail": "Authorization header not found."}, status=status.HTTP_401_UNAUTHORIZED)
+
+            # Отделить токен от 'Bearer'
+            token = auth_header.split()[1]
+
+            # Добавить токен в черный список
+            OutstandingToken.objects.filter(token=token).delete()
+
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
