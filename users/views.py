@@ -46,7 +46,7 @@ class UserListAPIView(generics.ListAPIView):
 
 class UserDestroyAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdminOrProfileOwner]
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
