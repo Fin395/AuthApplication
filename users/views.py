@@ -5,7 +5,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from users.models import User
-from users.permissions import IsAdminOrProfileOwner
+from users.permissions import IsAdminOrProfileOwner, IsAdminOrModeratorOrProfileOwner, \
+    IsAdminOrModerator
 from users.serializers import UserSerializer, UserReducedSerializer
 
 
@@ -29,7 +30,7 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.request.user.is_staff or self.request.user == self.get_object():
+        if self.request.user.groups.filter(name=['Администратор']).exists() or self.request.user == self.get_object():
             return UserSerializer
         else:
             return UserReducedSerializer
@@ -37,18 +38,17 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
 
 class UserListAPIView(generics.ListAPIView):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdminOrModerator]
 
     def get_serializer_class(self):
-        if self.request.user.is_staff:
+        if self.request.user.groups.filter(name='Администратор').exists():
             return UserSerializer
         else:
             return UserReducedSerializer
 
-
 class UserDestroyAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated, IsAdminOrProfileOwner]
+    permission_classes = [IsAuthenticated, IsAdminOrModeratorOrProfileOwner]
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -62,17 +62,15 @@ class LogoutView(APIView):
 
     def post(self, request):
         try:
-            # Получить токен из заголовка
             auth_header = request.headers.get('Authorization', None)
             if not auth_header:
-                return Response({"detail": "Authorization header not found."}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'detail': 'Authorization header not found.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-            # Отделить токен от 'Bearer'
             token = auth_header.split()[1]
 
-            # Добавить токен в черный список
             OutstandingToken.objects.filter(token=token).delete()
 
             return Response(status=status.HTTP_205_RESET_CONTENT)
+
         except Exception as e:
-            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
