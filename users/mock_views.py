@@ -72,6 +72,7 @@ class HomeworkMockDestroyAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, homework_id):
+
         # Проверяем права доступа
         if not request.user.has_perm(
             "users.can_delete_homework"

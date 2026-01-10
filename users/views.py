@@ -5,9 +5,11 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from users.models import User
-from users.permissions import (IsAdminOrModerator,
-                               IsAdminOrModeratorOrProfileOwner,
-                               IsAdminOrProfileOwner)
+from users.permissions import (
+    IsAdminOrModerator,
+    IsAdminOrModeratorOrProfileOwner,
+    IsAdminOrProfileOwner,
+)
 from users.serializers import UserReducedSerializer, UserSerializer
 
 
