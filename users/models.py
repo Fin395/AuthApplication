@@ -13,6 +13,12 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+        permissions = [
+            ('can_add_homework', 'Может создавать домашку'),
+            ('can_update_homework', 'Может редактировать домашку'),
+            ('can_view_homework', 'Может просматривать домашку'),
+            ('can_delete_homework', 'Может удалять домашку'),
+        ]
 
     def __str__(self):
         return self.email
