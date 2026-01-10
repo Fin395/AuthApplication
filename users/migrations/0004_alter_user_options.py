@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0003_remove_role_permissions_remove_user_roles_and_more'),
+        ("users", "0003_remove_role_permissions_remove_user_roles_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='user',
-            options={'permissions': [('Can_block_user', 'Может блокировать пользователя')], 'verbose_name': 'Пользователь', 'verbose_name_plural': 'Пользователи'},
+            name="user",
+            options={
+                "permissions": [("Can_block_user", "Может блокировать пользователя")],
+                "verbose_name": "Пользователь",
+                "verbose_name_plural": "Пользователи",
+            },
         ),
     ]

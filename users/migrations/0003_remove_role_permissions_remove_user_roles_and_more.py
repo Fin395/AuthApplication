@@ -6,22 +6,22 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_permission_role_user_roles'),
+        ("users", "0002_permission_role_user_roles"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='role',
-            name='permissions',
+            model_name="role",
+            name="permissions",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='roles',
+            model_name="user",
+            name="roles",
         ),
         migrations.DeleteModel(
-            name='Permission',
+            name="Permission",
         ),
         migrations.DeleteModel(
-            name='Role',
+            name="Role",
         ),
     ]

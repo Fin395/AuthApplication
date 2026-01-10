@@ -6,12 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0005_alter_user_options'),
+        ("users", "0005_alter_user_options"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='user',
-            options={'permissions': [('can_add_homework', 'Может создавать домашку'), ('can_update_homework', 'Может редактировать домашку'), ('can_view_homework', 'Может просматривать домашку')], 'verbose_name': 'Пользователь', 'verbose_name_plural': 'Пользователи'},
+            name="user",
+            options={
+                "permissions": [
+                    ("can_add_homework", "Может создавать домашку"),
+                    ("can_update_homework", "Может редактировать домашку"),
+                    ("can_view_homework", "Может просматривать домашку"),
+                ],
+                "verbose_name": "Пользователь",
+                "verbose_name_plural": "Пользователи",
+            },
         ),
     ]

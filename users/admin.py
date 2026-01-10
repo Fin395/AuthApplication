@@ -5,5 +5,9 @@ from users.models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'is_active',)
-    exclude=['password']
+    list_display = (
+        "id",
+        "email",
+        "is_active",
+    )
+    exclude = ["password"]

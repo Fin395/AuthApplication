@@ -5,9 +5,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from users.models import User
-from users.permissions import IsAdminOrProfileOwner, IsAdminOrModeratorOrProfileOwner, \
-    IsAdminOrModerator
-from users.serializers import UserSerializer, UserReducedSerializer
+from users.permissions import (IsAdminOrModerator,
+                               IsAdminOrModeratorOrProfileOwner,
+                               IsAdminOrProfileOwner)
+from users.serializers import UserReducedSerializer, UserSerializer
 
 
 class UserCreateAPIView(generics.CreateAPIView):
@@ -30,7 +31,10 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.request.user.groups.filter(name=['Администратор']).exists() or self.request.user == self.get_object():
+        if (
+            self.request.user.groups.filter(name=["Администратор"]).exists()
+            or self.request.user == self.get_object()
+        ):
             return UserSerializer
         else:
             return UserReducedSerializer
@@ -41,10 +45,11 @@ class UserListAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdminOrModerator]
 
     def get_serializer_class(self):
-        if self.request.user.groups.filter(name='Администратор').exists():
+        if self.request.user.groups.filter(name="Администратор").exists():
             return UserSerializer
         else:
             return UserReducedSerializer
+
 
 class UserDestroyAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
@@ -62,9 +67,12 @@ class LogoutView(APIView):
 
     def post(self, request):
         try:
-            auth_header = request.headers.get('Authorization', None)
+            auth_header = request.headers.get("Authorization", None)
             if not auth_header:
-                return Response({'detail': 'Authorization header not found.'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response(
+                    {"detail": "Authorization header not found."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
 
             token = auth_header.split()[1]
 
@@ -73,4 +81,4 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
 
         except Exception as e:
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -9,19 +9,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = "__all__"
 
     def validate(self, data):
-        if 'password' in data and 'password_again' in data:
-            if data['password'] != data['password_again']:
-                raise serializers.ValidationError('Пароли не совпадают')
+        if "password" in data and "password_again" in data:
+            if data["password"] != data["password_again"]:
+                raise serializers.ValidationError("Пароли не совпадают")
             else:
                 pass
-            data.pop('password_again')
+            data.pop("password_again")
         return data
 
 
 class UserReducedSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'is_staff']
+        fields = ["email", "is_staff"]
